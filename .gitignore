@@ -87,3 +87,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+
+## User Defined Files ##
+.DS_Store
+data
+*tsv
