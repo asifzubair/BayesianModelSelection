@@ -96,7 +96,7 @@ class PapaModelA6(PapaModel):
         self.name = "A6"
         PapaModel.__init__(self)
     def predict(self, parms):
-        return PapaModel.predict(self, np.append(parms, [parms[4], parms[4]]))
+        return PapaModel.predict(self, np.append(parms, [parms[5], parms[4]]))
 
 class PapaModelB7(PapaModel):
     def __init__(self):
@@ -111,7 +111,7 @@ class PapaModelB7r(PapaModel):
         PapaModel.__init__(self)
     def predict(self, parms):
        alpha, D, Co, Ns, K, K1, K3 = parms
-       K2 = K;
+       K2 = K1;
        params = np.array([alpha, D, Co, Ns, K, K1, K2, K3])
        return PapaModel.predict(self, params)
 
