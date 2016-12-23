@@ -127,60 +127,47 @@ class PapaModel_B_Kr(PapaModel):
         self.name = "B_Kr"
         PapaModel.__init__(self)
     def predict(self, parms):
-
         alpha, D, Co, Ns, K, K1, K2, K3 = parms
-
         K=10**(K - self.ab)
         K1=10**(K1 - self.ab)
         K2=10**(K2 - self.ab)
         K3=10**(K3 - self.ab)
- 
         Co=10**(Co)
         D = (D*45.0)/250000
         beta = alpha
-    
         params = [alpha, K, K1, K2, K3, Co, Ns]
-
         C = (1.*Co)/(Co + (1+Co*K*self.B)**Ns - 1)
-    
+        
         omega1=1./(max(omega_B_Kr(1, self.f0[0:self.N], self.B, C, self.T, params)))
         omega2=1./(max(omega_B_Kr(2, self.f0[0:self.N], self.B, C, self.T, params)))
         omega3=1./(max(omega_B_Kr(3, self.f0[0:self.N], self.B, C, self.T, params)))
         omega4=1./(max(omega_B_Kr(4, self.f0[0:self.N], self.B, C, self.T, params)))
-    
         omegas = [omega1, omega2, omega3, omega4]
     
         U = np.zeros([4*(self.n+1),self.k])
         U[:,0] = self.U0
-    
+        
         phi = linalg.expm((-1*D*self.An-beta*self.In)*self.tau)
         An_inv = linalg.inv(-1*D*self.An-beta*self.In)
         AN_INV = linalg.block_diag(An_inv,An_inv,An_inv,An_inv)
-    
         Phi =  linalg.block_diag(phi,phi,phi,phi)    
         BN = AN_INV.dot(Phi-np.eye(4*(self.n+1)))
     
         for ii in range(1,self.k):
             Fn = nonlinear_B_Kr(self.n, U[:,ii-1], self.B, C, self.T, params, omegas)
             U[:,ii] = Phi.dot(U[:,ii-1]) + BN.dot(Fn)
-
         return U[:,self.k-1]
         
 class PapaModel_B_Kr7(PapaModel_B_Kr):
-    
     def __init__(self):
         self.name = "B_Kr7"
-        PapaModel.__init__(self)
-    
+        PapaModel.__init__(self)    
     def predict(self, parms):
         return PapaModel_B_Kr.predict(self, np.append(params, params[4]))
 
 class PapaModel_B_Kr8(PapaModel_B_Kr):
-    
     def __init__(self):
         self.name = "B_Kr8"
         PapaModel.__init__(self)
-
     def predict(self, parms):
         return PapaModel_B_Kr.predict(self, params)
-    
