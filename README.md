@@ -1,5 +1,5 @@
 # Bayesian Model Selection
-Bayesian model selection for the Drosophila gap gene network
+Bayesian model selection for the _Drosophila_ gap gene network
 
 _requires:_
 ```
