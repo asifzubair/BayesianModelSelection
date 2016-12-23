@@ -126,6 +126,7 @@ class PapaModel_B_Kr(PapaModel):
     def __init__(self):
         self.name = "B_Kr"
         PapaModel.__init__(self)
+        
     def predict(self, parms):
         alpha, D, Co, Ns, K, K1, K2, K3 = parms
         K=10**(K - self.ab)
