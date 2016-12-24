@@ -1,7 +1,9 @@
 from mcmc_utils import *
-from math import log, pi
-from scipy.stats import uniform, multivariate_normal
-from pymc.Matplot import plot
+from math import log
+from math import pi
+from scipy.stats import uniform
+from scipy.stats import multivariate_normal
+from collections import defaultdict
 import numpy as np
 import pandas as pd
 import time
@@ -49,7 +51,7 @@ if __name__ == "__main__":
     if cfg['model']['initial_values']:
         initial_value = cfg['model']['initial_values']
     else:
-        initial_value = [uniform.rvs(lower, upper-lower) for lower,upper in zip(prior_min,prior_max)]
+        initial_value = initialise(prior_min, prior_max)
         cfg['model']['initial_values'] = initial_value
 
     initial_variance = (1./6)*np.diag(cfg['mcmc']['initial_variance'])
@@ -63,36 +65,30 @@ if __name__ == "__main__":
     os.system("mkdir -p " + dir_name)
     with open(os.path.join(dir_name, 'config.yml'), 'w') as outfile:
         outfile.write( yaml.dump(cfg) )
-
     """
     Chain initialisation
     """
     t0 = time.time()
-    theta0 = np.array([initial_value] * num_chains)
 
+    theta0 = np.array([initial_value] * num_chains)
     log_likelihood0 = np.array([calculate_log_likelihood(data, error, weight_vector, param, m.predict) for param in theta0])
     log_likelihood = temps * log_likelihood0
-
-    # theta_matrix = []
-    # accepted = []
-    # LnLike = []
-    # with open(os.path.join(dir_name, "posteriors" + "_" + suffix + ".csv"), 'w') as f:
 
     files = [os.path.join(dir_name, "posteriors" + "_" + suffix + "_" + str(temp + 1) + ".csv") for temp in range(num_chains)]
     handles = [open(dump_name, "w") for dump_name in files]
     tmp = [f.write("\t".join(cols) + "\t" + "accept" + "\t" + "LnLike" + "\n") for f in handles]
-
+#    swaps  = np.zeros([num_chains, num_chains])
+#    swap_at = defaultdict(list)
+    
     for i in range(num_steps):
-        theta = [multivariate_normal.rvs(t, initial_variance, 1) for t in theta0]
+        theta = [proposal_step(t, initial_variance) for t in theta0]
         theta = np.array([reflect_proposal(t, prior_min, prior_max) for t in theta])
         proposed_log_likelihood0 = np.array([calculate_log_likelihood(data, error, weight_vector, param, m.predict) for param in theta])
         proposed_log_likelihood = temps * proposed_log_likelihood0
         log_hr = proposed_log_likelihood - log_likelihood
-
         """ 
         Crossover could be included as well.
         """
-
         accept = np.array([u < hr for u,hr in zip(np.log(uniform.rvs(size=num_chains)),log_hr)])
         theta0[accept] = theta[accept]
         log_likelihood0[accept] = proposed_log_likelihood0[accept]
@@ -104,46 +100,23 @@ if __name__ == "__main__":
                 proposed_log_likelihood_ii = temps[ii] * log_likelihood0[jj]
                 proposed_log_likelihood_jj = temps[jj] * log_likelihood0[ii]
                 trans_prob = 0.
-                # if (not ii) or (ii == num_chains-1):
-                #     trans_prob = log(2)
-                # if (not jj) or (jj == num_chains-1):
-                #     trans_prob = log(2)
-
-                exchange_log_hr =  proposed_log_likelihood_ii + proposed_log_likelihood_jj  - log_likelihood[ii] - log_likelihood[jj] + trans_prob
+                exchange_log_hr =  proposed_log_likelihood_ii + proposed_log_likelihood_jj  - log_likelihood[ii] - log_likelihood[jj]
                 if (log(uniform.rvs()) < exchange_log_hr):
                     theta0[ii], theta0[jj] = theta0[jj].copy(), theta0[ii].copy()
                     log_likelihood0[ii], log_likelihood0[jj] = log_likelihood0[jj], log_likelihood0[ii]
                     log_likelihood[ii], log_likelihood[jj] = proposed_log_likelihood_ii, proposed_log_likelihood_jj
-        # theta_matrix.append(theta0.copy())
-        # accepted.append(accept)
-        # LnLike.append(log_likelihood.copy())
+#                    swaps[ii,jj] += 1
+#                    swap_at[(ii,jj)].append(i)
 
         posts = [np.append(theta0.copy()[temp, :], [accept[temp], log_likelihood.copy()[temp]]) for temp in range(num_chains)]
         tmp = [f.write("\t".join(str(x) for x in post) + "\n") for post, f in zip(posts, handles)]
 
         if not (i%10000):
             f.flush()
+#            np.savetxt(os.path.join(dir_name, 'swaps_' + str(i) + ".txt"), swaps)
+#            with open(os.path.join(dir_name, 'swap_at' + str(i) + ".txt"), "w") as f:
+#                for k in swap_at.keys():
+#                    f.write(str(k) + "\t" + "\t".join([str(i) for i in swap_at[k]]) + "\n")
 
-    print str((time.time() - t0)/60.) + " mins. to run " + str(num_steps) + " iters. with " + str(num_chains) + " chains and exchange is " + str(do_exchange) + "!"
-   
-    # theta_matrix = np.array(theta_matrix)
-    # accepted = np.array(accepted)
-    # LnLike = np.array(LnLike)
-    # posteriors = theta_matrix[:,-1,:]
-    # posteriors = pd.DataFrame(posteriors, columns=cols)
-    # posteriors["accepted"] = accepted[:,-1]
-    # posteriors["likelihood"] = LnLike[:,-1]
-    # posteriors.to_csv(os.path.join(dir_name, "posteriors" + "_" + suffix + ".csv"), sep="\t", index=False)
-    # if dump_all:
-    #     for temp in range(len(temps)):
-    #         post = theta_matrix[:,temp,:]
-    #         post = pd.DataFrame(post, columns=cols)
-    #         post["accepted"] = accepted[:,temp]
-    #         post["likelihood"] = LnLike[:,temp]
-    #         post.to_csv(os.path.join(dir_name, "posteriors" + "_" + suffix + "_" + str(temp + 1) + ".csv"), sep="\t", index=False)
-    # for temp in range(len(temps)):
-    #     post = np.append(theta0.copy[temp, :], [accept, log_likelihood.copy()])
-    #     post = pd.DataFrame(post, columns=cols)
-    #     post["accepted"] = accepted[:,temp]
-    #     post["likelihood"] = LnLike[:,temp]
-    #     post.to_csv(os.path.join(dir_name, "posteriors" + "_" + suffix + "_" + str(temp + 1) + ".csv"), sep="\t", index=False)
+    print str((time.time() - t0)/60.) + " mins. to run " + str(num_steps) + " iters. with " \
+    + str(num_chains) + " chains and exchange is " + str(do_exchange) + "!"
