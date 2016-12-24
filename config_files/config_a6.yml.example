@@ -1,15 +1,15 @@
 ## MCMC parameters
 
 mcmc:
-    seed: 1234567
-    num_steps: 1000000
+    seed: 2234567
+    num_steps: 100000
     num_chains: 10
     num_pairs: 10
     error: 0.1
     do_exchange: True
     dump_all: True
     suffix: pt_1M
-    dir_name: m_a6/run1
+    dir_name: m_a6/run2
     initial_variance: [0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
 
 

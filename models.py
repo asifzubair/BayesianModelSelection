@@ -26,7 +26,7 @@ class PapaModel:
         Basis0 = basis(np.linspace(0,1,self.N), self.n)
         self.Basis = linalg.block_diag(Basis0,Basis0,Basis0,Basis0)
 
-        inFile = np.loadtxt('inputs-outputs.txt', delimiter='\t')
+        inFile = np.loadtxt('data/inputs-outputs.txt', delimiter='\t')
         f10 = inFile[:,1]
         f20 = np.zeros(self.N)
         f30 = np.zeros(self.N)
