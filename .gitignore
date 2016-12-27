@@ -94,3 +94,5 @@ ENV/
 data
 *tsv
 *yml
+*.qsub
+*.csv
