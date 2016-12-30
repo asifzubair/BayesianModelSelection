@@ -110,10 +110,10 @@ class PapaModelB7r(PapaModel):
         self.name = "B7r"
         PapaModel.__init__(self)
     def predict(self, parms):
-       alpha, D, Co, Ns, K, K1, K3 = parms
-       K2 = K1;
-       params = np.array([alpha, D, Co, Ns, K, K1, K2, K3])
-       return PapaModel.predict(self, params)
+        alpha, D, Co, Ns, K, K1, K3 = parms
+        K2 = K1;
+        params = np.array([alpha, D, Co, Ns, K, K1, K2, K3])
+        return PapaModel.predict(self, params)
 
 class PapaModelC8(PapaModel):
     def __init__(self):
@@ -165,6 +165,16 @@ class PapaModel_B_Kr7(PapaModel_B_Kr):
         PapaModel.__init__(self)    
     def predict(self, parms):
         return PapaModel_B_Kr.predict(self, np.append(parms, parms[4]))
+
+class PapaModel_B_Kr7r(PapaModel_B_Kr):
+    def __init__(self):
+        self.name = "B_Kr7r"
+        PapaModel.__init__(self)    
+    def predict(self, parms):
+        alpha, D, Co, Ns, K, K1, K3 = parms
+        K2 = K1;
+        params = np.array([alpha, D, Co, Ns, K, K1, K2, K3])
+        return PapaModel.predict(self, params)
 
 class PapaModel_B_Kr8(PapaModel_B_Kr):
     def __init__(self):
