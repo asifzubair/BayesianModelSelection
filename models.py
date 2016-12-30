@@ -174,7 +174,7 @@ class PapaModel_B_Kr7r(PapaModel_B_Kr):
         alpha, D, Co, Ns, K, K1, K3 = parms
         K2 = K1;
         params = np.array([alpha, D, Co, Ns, K, K1, K2, K3])
-        return PapaModel.predict(self, params)
+        return PapaModel_B_Kr.predict(self, params)
 
 class PapaModel_B_Kr8(PapaModel_B_Kr):
     def __init__(self):
