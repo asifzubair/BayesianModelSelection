@@ -146,12 +146,12 @@ model:
     param_names: [alpha, D, Co, Ns, K, K1, K2, K3]
     initial_values: 
     prior_min: [0.0001, 0.0001, 0.0001, 1., 3.5, 3.5, 3.5, 3.5]
-    prior_max: [1., 2., 2., 200., 9., 9., 9., 9.]" > configs/config_c8/config_mc8_${ii}.yml
+    prior_max: [1., 2., 2., 200., 9., 9., 9., 9.]" > configs/config_c8/config_c8_${ii}.yml
 done
 
 for i in `echo {01..10}`; do
 	qsubHead.sh -s run_mc8_${i} -w 500 -m 5gb
-	echo python mcmc.py configs/config_c8/config_mc8_${i}.yml >> run_mc8_${i}.qsub
+	echo python mcmc.py configs/config_c8/config_c8_${i}.yml >> run_mc8_${i}.qsub
 done
 
 for i in `echo {01..10}`; do
