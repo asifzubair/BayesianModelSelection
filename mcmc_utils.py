@@ -81,10 +81,14 @@ def marginal_likelihood(likelihood, temps):
 def posterior_sample(y, df, predict, name="sample_posteriors", sample_every=10):
     """samples from the posterior"""
     gap = ["Hb","Kni","Kr","Gt"]
+    dom_antr = [30, 40, 20, 10]
+    dom_post = [70, 90, 80, 90]
     post = sub_sample(df, 0, sample_every)
     fig, ax = plt.subplots(2,2)
     for i, a in enumerate(ax.flatten()):
         a.plot(y[i*100:100+i*100],"black")
+        a.plot((dom_antr[i], dom_antr[i]), (0,1), 'k-')
+        a.plot((dom_post[i], dom_post[i]), (0,1), 'k-')
         a.set_title(gap[i])
     for parms in post.iterrows():
         Ji = predict(parms[1][:-2])
