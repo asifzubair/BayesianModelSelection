@@ -8,11 +8,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def initialise(prior_min, prior_max):
+    """random initial start point"""
     init = [uniform.rvs(lower, upper-lower) for lower,upper in zip(prior_min,prior_max)]
     init[3] = int(init[3])
     return init
 
 def proposal_step(theta, initial_variance):
+    """proposal distribution"""
     t =  theta.copy()
     if uniform.rvs() > 0.9:
         t[3] = t[3] + np.random.choice([-1.,1.],1)[0]
@@ -23,7 +25,6 @@ def proposal_step(theta, initial_variance):
 
 def reflect_proposal(parametersProposed, parametersLower, parametersUpper):
     """reflectProposal: We use reflecting boundaries"""
-
     for ii in range(np.size(parametersProposed)):
         while (parametersProposed[ii] < parametersLower[ii] or parametersUpper[ii] < parametersProposed[ii]):
             if(parametersProposed[ii] < parametersLower[ii]):
@@ -33,15 +34,13 @@ def reflect_proposal(parametersProposed, parametersLower, parametersUpper):
     return parametersProposed
 
 def calculate_log_likelihood(target_data, exp_error, weight_vector, params, model):
-    """Log likelihood of the data given the parameters"""
-
+    """log likelihood of the data given the parameters"""
     exact_solution = model(params)
     LL = -(0.5)*(log(2*pi) + 2*log(exp_error) + ((exact_solution - target_data)**2)/(exp_error**2))
     return weight_vector.dot(LL)
 
 def exchange(chain, num_chains):
-    """Exchange scheme"""
-
+    """exchange scheme"""
     if not chain:
         return 1
     if chain == num_chains-1:
@@ -49,12 +48,11 @@ def exchange(chain, num_chains):
     return np.random.choice([chain-1, chain+1],1)[0]
 
 def sub_sample(df, burn_in = 5000, thin = 10):
-    """Remove burn-in and subsample"""
+    """remove burn-in and subsample"""
     return df[burn_in::thin]
 
 def trace_plot(file_name, suffix='', burn_in=5000, thin=10, likelihood_only=False, verbose=1, last=False):
-    """Plots traces of various kinds"""
-
+    """plots traces of various kinds"""
     df = pd.read_table(file_name)
     if verbose:
         print "*" * 40
@@ -73,8 +71,7 @@ def trace_plot(file_name, suffix='', burn_in=5000, thin=10, likelihood_only=Fals
     return df
 
 def marginal_likelihood(likelihood, temps):
-    """Gives the estimate for the marginal likelihood"""
-    
+    """estimate for the marginal likelihood"""
     delta = np.diff(temps)    
     delta = np.append(np.append(0,delta),0)
     deltas = delta[:-1] + delta[1:]
@@ -82,6 +79,7 @@ def marginal_likelihood(likelihood, temps):
     return 0.5*deltas.dot(means)
 
 def posterior_sample(y, df, predict, name="sample_posteriors", sample_every=10):
+    """samples from the posterior"""
     gap = ["Hb","Kni","Kr","Gt"]
     post = sub_sample(df, 0, sample_every)
     fig, ax = plt.subplots(2,2)
