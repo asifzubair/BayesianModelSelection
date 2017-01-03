@@ -2,7 +2,6 @@ import numpy as np
 from scipy import linalg
 from models_utils import *
 
-
 class PapaModel:
     def __init__(self):
     	## self.name = name
