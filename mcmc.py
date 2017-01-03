@@ -12,7 +12,6 @@ import sys
 import yaml
 
 if __name__ == "__main__":
-
     if len(sys.argv) == 1:
         print "give me a config file !"
         sys.exit()
