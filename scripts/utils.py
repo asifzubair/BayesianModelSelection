@@ -35,7 +35,7 @@ def marginal_likelihood(likelihood, temps):
     delta = np.diff(temps)    
     delta = np.append(np.append(0,delta),0)
     deltas = delta[:-1] + delta[1:]
-    means = likelihood.mean(axis=0)
+    means = likelihood.mean(axis=1)
     return 0.5*deltas.dot(means)
 
 def posterior_sample(y, df, predict, name="sample_posteriors", sample_every=10):
