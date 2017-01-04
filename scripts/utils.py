@@ -11,6 +11,10 @@ def sub_sample(df, burn_in = 5000, thin = 10):
     """remove burn-in and subsample"""
     return df[burn_in::thin]
 
+def open_run_subsample(file_name, burn_in = 5000, thin = 10):
+    df = pd.read_table(file_name)
+    return sub_sample(df, burn_in, thin)
+
 def trace_plot(file_name, suffix='', burn_in=5000, thin=10, name = "trace", verbose=1, last=False):
     """plots traces of various kinds"""
     df = pd.read_table(file_name)
