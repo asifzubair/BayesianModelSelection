@@ -79,4 +79,16 @@ asifzuba@hpc-cmb(~/BayesianModelSelection/scripts)
 -7.63001611594
 -6.07234008418
 -6.58031492276
+asifzuba@hpc-cmb(~/BayesianModelSelection/scripts)
+(0)> python summarize_runs.py ../m_B_Kr8_1
+34.6693402761
+-246.147316314
+35.0641075003
+34.7773279095
+34.981201328
+34.6693402761
+34.8861426268
+35.036647687
+10.8929706374
+35.1103954029
 ```
