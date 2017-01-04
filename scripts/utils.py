@@ -21,11 +21,10 @@ def trace_plot(file_name, suffix='', burn_in=5000, thin=10, name = "trace", like
         print "*" + "\t" + "Thin: " + str(thin)
         print "*" * 40
     df = sub_sample(df, burn_in, thin)
-    if likelihood_only:
-        ax = df["LnLike"].plot(figsize=(10,6), title = "Likelihood " + suffix, use_index = False, fontsize=15)
-        fig = ax.get_figure()
-        fig.savefig(name + "_trace.pdf", format='pdf', dpi=1200)
-        return df
+    ax = df["LnLike"].plot(figsize=(10,6), title = "Likelihood " + suffix, use_index = False, fontsize=15)
+    fig = ax.get_figure()
+    fig.savefig(name + "_trace.pdf", format='pdf', dpi=1200)
+    return df
         
 def marginal_likelihood(likelihood, temps):
     """estimate for the marginal likelihood"""
