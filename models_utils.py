@@ -21,20 +21,20 @@ def omega(which,Hb,B,C,T,params):
     elif which == 3:
         f = p(Hb, K, Co, Ns)*(1-p(Hb, K, Co, Ns))
     elif which == 4:
-        f = (1-((1-p(B, K, Co, Ns))*(1-p(C, K, Co, Ns))))
+        f = (1-((1-p(B, K3, Co, Ns))*(1-p(C, K, Co, Ns))))
     return f
 
 def omega_B_Kr(which,Hb,B,C,T,params):
     #1-Hunchback, 2-Knirps, 3-Kruppel, 4-Giant
     alpha, K, K1, K2, K3, Co, Ns = params
     if which == 1:
-        f = p(B, K, Co, Ns)*p(Hb, K, Co, Ns)
+        f = p(B, K3, Co, Ns)*p(Hb, K, Co, Ns)
     elif which == 2:
-        f = p(B, K, Co, Ns)*(1-p(Hb, K1, Co, Ns))
+        f = p(B, K3, Co, Ns)*(1-p(Hb, K1, Co, Ns))
     elif which == 3:
         f = p(B, K3, Co, Ns)*p(Hb, K, Co, Ns)*(1-p(Hb, K, Co, Ns))
     elif which == 4:
-        f = (1-((1-p(B, K, Co, Ns))*(1-p(C, K, Co, Ns))))
+        f = (1-((1-p(B, K3, Co, Ns))*(1-p(C, K, Co, Ns))))
     return f
         
 def p(u, K, Co, Ns):
@@ -71,13 +71,13 @@ def G_B_Kr(which, V1,V2,V3,V4, x, Bi, Ci, Ti, params, omegas):
     Gt = V4    
     
     if which == 1:
-        f = omega1*alpha*p(Bi[x], K, Co, Ns)*p(Hb[x], K, Co, Ns)*(1-p(Kni[x], K, Co, Ns))
+        f = omega1*alpha*p(Bi[x], K3, Co, Ns)*p(Hb[x], K, Co, Ns)*(1-p(Kni[x], K, Co, Ns))
     elif which == 2:
-        f = omega2*alpha*p(Bi[x], K, Co, Ns)*(1-p(Hb[x], K1, Co, Ns))*(1-p(Ti[x], K, Co, Ns))
+        f = omega2*alpha*p(Bi[x], K3, Co, Ns)*(1-p(Hb[x], K1, Co, Ns))*(1-p(Ti[x], K, Co, Ns))
     elif which == 3:
         f = omega3*alpha*p(Bi[x], K3, Co, Ns)*p(Hb[x], K, Co, Ns)*(1-p(Hb[x], K, Co, Ns))*(1-p(Gt[x], K, Co, Ns))
     elif which == 4:
-        f = omega4*alpha*(1-(1-p(Bi[x], K, Co, Ns))*(1-p(Ci[x], K, Co, Ns)))*(1-p(Kr[x], K2, Co, Ns))*(1-p(Ti[x], K, Co, Ns))
+        f = omega4*alpha*(1-(1-p(Bi[x], K3, Co, Ns))*(1-p(Ci[x], K, Co, Ns)))*(1-p(Kr[x], K2, Co, Ns))*(1-p(Ti[x], K, Co, Ns))
     return f
 
 def proj(which, n, V1,V2,V3,V4, B, C, T, params, omegas):
