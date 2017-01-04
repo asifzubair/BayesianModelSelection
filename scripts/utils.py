@@ -1,3 +1,12 @@
+from math import log
+from math import pi
+from scipy.stats import uniform
+from scipy.stats import multivariate_normal
+from pymc.Matplot import plot
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
 def sub_sample(df, burn_in = 5000, thin = 10):
     """remove burn-in and subsample"""
     return df[burn_in::thin]
