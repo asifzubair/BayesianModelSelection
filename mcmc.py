@@ -76,8 +76,6 @@ if __name__ == "__main__":
     files = [os.path.join(dir_name, "posteriors" + "_" + suffix + "_" + str(temp + 1) + ".csv") for temp in range(num_chains)]
     handles = [open(dump_name, "w") for dump_name in files]
     tmp = [f.write("\t".join(cols) + "\t" + "accept" + "\t" + "LnLike" + "\n") for f in handles]
-#    swaps  = np.zeros([num_chains, num_chains])
-#    swap_at = defaultdict(list)
     
     for i in range(num_steps):
         theta = [proposal_step(t, initial_variance) for t in theta0]
@@ -104,18 +102,12 @@ if __name__ == "__main__":
                     theta0[ii], theta0[jj] = theta0[jj].copy(), theta0[ii].copy()
                     log_likelihood0[ii], log_likelihood0[jj] = log_likelihood0[jj], log_likelihood0[ii]
                     log_likelihood[ii], log_likelihood[jj] = proposed_log_likelihood_ii, proposed_log_likelihood_jj
-#                    swaps[ii,jj] += 1
-#                    swap_at[(ii,jj)].append(i)
 
         posts = [np.append(theta0.copy()[temp, :], [accept[temp], log_likelihood.copy()[temp]]) for temp in range(num_chains)]
         tmp = [f.write("\t".join(str(x) for x in post) + "\n") for post, f in zip(posts, handles)]
 
         if not (i%10000):
-            f.flush()
-#            np.savetxt(os.path.join(dir_name, 'swaps_' + str(i) + ".txt"), swaps)
-#            with open(os.path.join(dir_name, 'swap_at' + str(i) + ".txt"), "w") as f:
-#                for k in swap_at.keys():
-#                    f.write(str(k) + "\t" + "\t".join([str(i) for i in swap_at[k]]) + "\n")
+            tmp = [f.flush() for f in handles]
 
     print str((time.time() - t0)/60.) + " mins. to run " + str(num_steps) + " iters. with " \
     + str(num_chains) + " chains and exchange is " + str(do_exchange) + "!"
