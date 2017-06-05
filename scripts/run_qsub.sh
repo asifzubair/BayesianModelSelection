@@ -72,7 +72,7 @@ model:
     param_names: [alpha, D, Co, Ns, K, K1, K3]
     initial_values: 
     prior_min: [0.0001, 0.0001, 0.0001, 1., 3.5, 3.5, 3.5]
-    prior_max: [1., 2., 2., 200., 9., 9., 9.]" > config_b7r_${i}.yml
+    prior_max: [1., 2., 2., 200., 9., 9., 9.]" > configs/config_b7r/config_b7r_${i}.yml
 done
 
 for i in `echo {01..10}`; do
