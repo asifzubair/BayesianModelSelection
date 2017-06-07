@@ -1,0 +1,19 @@
+mcmc:
+  dir_name: m_c8_1
+  do_exchange: true
+  dump_all: true
+  error: 0.01
+  initial_variance: [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001]
+  num_chains: 20
+  num_pairs: 20
+  num_steps: 200000
+  seed: 2234567
+  suffix: pt_200k
+model:
+  class_file: models
+  initial_values: [0.123931661897, 0.889332851013, 0.0465794394451, 159.0, 5.62132157887,
+    5.80044389978, 6.18204752944, 6.92892907155]
+  object: models.PapaModelC8()
+  param_names: [alpha, D, Co, Ns, K, K1, K2, K3]
+  prior_max: [1.0, 2.0, 2.0, 200.0, 9.0, 9.0, 9.0, 9.0]
+  prior_min: [0.0001, 0.0001, 0.0001, 1.0, 3.5, 3.5, 3.5, 3.5]
